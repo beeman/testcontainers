@@ -1,71 +1,58 @@
 # @beeman/testcontainers
 
-This is a template for creating a modern TypeScript library or package using [Bun](https://bun.sh/). It comes pre-configured with essential tools for development, testing, linting, and publishing.
+A collection of [Testcontainers](https://testcontainers.com/) for testing your applications with real services.
 
-## Features
-
-*   **Bun-first development**: Leverages Bun for lightning-fast installs, runs, and tests.
-*   **TypeScript support**: Write type-safe code from the start.
-*   **Linting & Formatting**: Enforced with [Biome](https://biomejs.dev/) for consistent code style.
-*   **Bundling**: Uses [tsup](https://tsup.js.org/) for efficient bundling into ESM and CJS formats, with type declarations.
-*   **Testing**: Built-in unit testing with `bun test`.
-*   **Versioning & Publishing**: Managed with [Changesets](https://github.com/changesets/changesets) for streamlined releases to npm.
-*   **GitHub Actions**: Continuous Integration (CI) workflows for automated build, test, lint, and publish processes.
-
-## Getting Started
-
-### Installation
-
-If you're using this template directly (e.g., after cloning), you can install dependencies with Bun:
+## Installation
 
 ```bash
-bun install
+bun add @beeman/testcontainers testcontainers
 ```
 
-### Development
+## Available Containers
 
-*   **Build**: `bun run build`
-*   **Type Check**: `bun run check-types`
-*   **Lint**: `bun run lint`
-*   **Lint & Fix**: `bun run lint:fix`
-*   **Test**: `bun test`
-*   **Test (Watch Mode)**: `bun run test:watch`
+### Solana Test Validator
 
-### Publishing
+The `SolanaTestValidatorContainer` provides a real Solana validator running in a Docker container, perfect for integration tests. It uses the `ghcr.io/beeman/solana-test-validator` image by default.
 
-This template uses Changesets for versioning and publishing.
+#### Usage
 
-1.  **Add a changeset**:
-    ```bash
-    bun changeset
-    ```
-    Follow the prompts to describe your changes. This will create a markdown file in `.changeset/`.
+```typescript
+import { SolanaTestValidatorContainer } from '@beeman/testcontainers'
+import { createDefaultRpcClient } from '@solana/kit'
 
-2.  **Version packages**:
-    ```bash
-    bun run version
-    ```
-    This command reads the changeset files, updates package versions, updates `CHANGELOG.md`, and deletes the used changeset files. It also runs `bun lint:fix`.
+// Start the container
+const container = await new SolanaTestValidatorContainer().start()
 
-3.  **Publish to npm**:
-    ```bash
-    bun run release
-    ```
-    This command builds the package and publishes it to npm. Ensure you are logged into npm (`npm login`) or have `NPM_TOKEN` configured in your CI environment.
+// Get the connection URLs
+const rpcUrl = container.url
+const wsUrl = container.urlWs
 
-## Project Structure
+// Use with @solana/kit
+const client = createDefaultRpcClient({ url: rpcUrl })
 
+// ... run your tests ...
+
+// Stop the container when done
+await container.stop()
 ```
-.
-├── src/             # Source code for your library
-│   └── index.ts     # Main entry point for your library
-├── test/            # Unit tests
-│   └── index.test.ts # Example test file
-├── tsup.config.ts   # Configuration for tsup (bundling)
-├── biome.json       # Biome linter/formatter configuration
-├── package.json     # Project metadata and scripts
-└── ... (other config files and GitHub workflows)
-```
+
+#### Properties
+
+- `container.url`: Returns the RPC URL (e.g., `http://localhost:32768`).
+- `container.urlWs`: Returns the WebSocket URL (e.g., `ws://localhost:32769`).
+- `container.port`: Returns the mapped RPC port.
+- `container.portWs`: Returns the mapped WebSocket port.
+
+## Development
+
+This project is built with [Bun](https://bun.sh/).
+
+### Commands
+
+- **Build**: `bun run build`
+- **Test**: `bun test`
+- **Lint**: `bun run lint`
+- **Type Check**: `bun run check-types`
 
 ## License
 

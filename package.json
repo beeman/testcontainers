@@ -3,9 +3,12 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",
     "@changesets/cli": "^2.29.8",
+    "@solana/kit": "^5.4.0",
+    "@solana/kit-plugins": "^0.2.0",
     "@types/bun": "latest",
     "pkg-pr-new": "^0.0.62",
     "publint": "^0.3.16",
+    "testcontainers": "^11.11.0",
     "tsup": "^8.5.1"
   },
   "exports": {

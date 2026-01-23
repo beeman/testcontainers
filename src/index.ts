@@ -1,3 +1,4 @@
-export function greet(name: string = 'World'): string {
-  return `Hello, ${name} from @beeman/testcontainers!`
-}
+export {
+  SolanaTestValidatorContainer,
+  StartedSolanaTestValidatorContainer,
+} from './solana-test-validator-container.ts'
