@@ -36,6 +36,7 @@
     "url": "https://github.com/beeman/testcontainers"
   },
   "peerDependencies": {
+    "testcontainers": "^11",
     "typescript": "^5"
   },
   "scripts": {

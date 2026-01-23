@@ -4,6 +4,7 @@ export default defineConfig({
   clean: true,
   dts: true,
   entry: ['src/index.ts'],
+  external: ['testcontainers'],
   format: ['esm', 'cjs'],
   sourcemap: true,
   splitting: false,
