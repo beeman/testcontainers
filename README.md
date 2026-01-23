@@ -18,7 +18,7 @@ The `SolanaTestValidatorContainer` provides a real Solana validator running in a
 
 ```typescript
 import { SolanaTestValidatorContainer } from '@beeman/testcontainers'
-import { createDefaultRpcClient } from '@solana/kit'
+import { createSolanaRpc } from '@solana/kit'
 
 // Start the container
 const container = await new SolanaTestValidatorContainer().start()
@@ -28,7 +28,7 @@ const rpcUrl = container.url
 const wsUrl = container.urlWs
 
 // Use with @solana/kit
-const client = createDefaultRpcClient({ url: rpcUrl })
+const client = createSolanaRpc(rpcUrl)
 
 // ... run your tests ...
 
@@ -51,7 +51,7 @@ The `SurfpoolContainer` provides a [Surfpool](https://github.com/txtx/surfpool) 
 
 ```typescript
 import { SurfpoolContainer } from '@beeman/testcontainers'
-import { createDefaultRpcClient } from '@solana/kit'
+import { createSolanaRpc } from '@solana/kit'
 
 // Start the container (offline mode by default)
 const container = await new SurfpoolContainer().start()
@@ -62,7 +62,7 @@ const wsUrl = container.urlWs
 const studioUrl = container.urlStudio
 
 // Use with @solana/kit
-const client = createDefaultRpcClient({ url: rpcUrl })
+const client = createSolanaRpc(rpcUrl)
 
 // ... run your tests ...
 
