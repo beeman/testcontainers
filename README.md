@@ -5,7 +5,7 @@ A collection of [Testcontainers](https://testcontainers.com/) for testing your a
 ## Installation
 
 ```bash
-bun add @beeman/testcontainers testcontainers
+bun add @beeman/testcontainers testcontainers @solana/kit @solana/kit-plugins
 ```
 
 ## Available Containers
@@ -17,18 +17,13 @@ The `SolanaTestValidatorContainer` provides a real Solana validator running in a
 #### Usage
 
 ```typescript
-import { SolanaTestValidatorContainer } from '@beeman/testcontainers'
-import { createSolanaRpc } from '@solana/kit'
+import { SolanaTestValidatorContainer, createLocalSolanaClient } from '@beeman/testcontainers'
 
 // Start the container
 const container = await new SolanaTestValidatorContainer().start()
 
-// Get the connection URLs
-const rpcUrl = container.url
-const wsUrl = container.urlWs
-
-// Use with @solana/kit
-const client = createSolanaRpc(rpcUrl)
+// Create a client with auto-generated payer
+const client = await createLocalSolanaClient({ container })
 
 // ... run your tests ...
 
@@ -50,19 +45,16 @@ The `SurfpoolContainer` provides a [Surfpool](https://github.com/txtx/surfpool) 
 #### Basic Usage
 
 ```typescript
-import { SurfpoolContainer } from '@beeman/testcontainers'
-import { createSolanaRpc } from '@solana/kit'
+import { SurfpoolContainer, createLocalSolanaClient } from '@beeman/testcontainers'
 
 // Start the container (offline mode by default)
 const container = await new SurfpoolContainer().start()
 
-// Get the connection URLs
-const rpcUrl = container.url
-const wsUrl = container.urlWs
-const studioUrl = container.urlStudio
+// Create a client with auto-generated payer
+const client = await createLocalSolanaClient({ container })
 
-// Use with @solana/kit
-const client = createSolanaRpc(rpcUrl)
+// Access the Studio URL
+const studioUrl = container.urlStudio
 
 // ... run your tests ...
 
@@ -169,6 +161,36 @@ const container = await new SurfpoolContainer()
 | `withPort(port)` | Set RPC port (default: 8899) |
 | `withWsPort(port)` | Set WebSocket port (default: 8900) |
 | `withStudioPort(port)` | Set Studio port (default: 18488) |
+
+## Utilities
+
+### `createLocalSolanaClient`
+
+A convenience helper that creates a Solana RPC client configured for a local container. It wraps `createDefaultLocalhostRpcClient` from `@solana/kit-plugins` and works with both `SolanaTestValidatorContainer` and `SurfpoolContainer`.
+
+```typescript
+import { SurfpoolContainer, createLocalSolanaClient } from '@beeman/testcontainers'
+
+const container = await new SurfpoolContainer().start()
+
+// Create a client with an auto-generated payer
+const client = await createLocalSolanaClient({ container })
+
+// Or provide your own payer
+import { generateKeyPairSigner } from '@solana/kit'
+
+const payer = await generateKeyPairSigner()
+const client = await createLocalSolanaClient({ container, payer })
+```
+
+The returned `LocalSolanaClient` provides access to `rpc`, `rpcSubscriptions`, and the `payer` signer.
+
+#### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `container` | `StartedSolanaTestValidatorContainer \| StartedSurfpoolContainer` | A started container instance |
+| `payer` | `TransactionSigner` (optional) | A payer signer; auto-generated if not provided |
 
 ## Development
 

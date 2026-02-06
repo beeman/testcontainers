@@ -1,26 +1,17 @@
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test'
-import type { KeyPairSigner, TransactionSigner } from '@solana/kit'
+import type { KeyPairSigner } from '@solana/kit'
 import { generateKeyPairSigner, lamports } from '@solana/kit'
-import { createDefaultRpcClient } from '@solana/kit-plugins'
+import { createLocalSolanaClient, type LocalSolanaClient } from '../src/create-local-solana-client.ts'
 import { type StartedSurfpoolContainer, SurfpoolContainer } from '../src/surfpool-container.ts'
-
-function createSolanaClient(container: StartedSurfpoolContainer, payer: TransactionSigner) {
-  return createDefaultRpcClient({
-    payer,
-    rpcSubscriptionsConfig: { url: container.urlWs },
-    url: container.url,
-  })
-}
 
 describe('SurfpoolContainer', () => {
   describe('default configuration', () => {
     let container: StartedSurfpoolContainer
-    let client: ReturnType<typeof createSolanaClient>
+    let client: LocalSolanaClient
 
     beforeAll(async () => {
-      const payer = await generateKeyPairSigner()
       container = await new SurfpoolContainer().start()
-      client = createSolanaClient(container, payer)
+      client = await createLocalSolanaClient({ container })
     }, 120_000)
 
     afterAll(async () => {
@@ -74,7 +65,7 @@ describe('SurfpoolContainer', () => {
 
   describe('with airdrop', () => {
     let container: StartedSurfpoolContainer
-    let client: ReturnType<typeof createSolanaClient>
+    let client: LocalSolanaClient
     let airdropKeypair: KeyPairSigner
     const airdropAmount = 500_000_000_000 // 500 SOL
 
@@ -82,7 +73,7 @@ describe('SurfpoolContainer', () => {
       const payer = await generateKeyPairSigner()
       airdropKeypair = await generateKeyPairSigner()
       container = await new SurfpoolContainer().withAirdrop([airdropKeypair.address], airdropAmount).start()
-      client = createSolanaClient(container, payer)
+      client = await createLocalSolanaClient({ container, payer })
     }, 120_000)
 
     afterAll(async () => {
@@ -104,12 +95,12 @@ describe('SurfpoolContainer', () => {
 
   describe('with custom slot time', () => {
     let container: StartedSurfpoolContainer
-    let client: ReturnType<typeof createSolanaClient>
+    let client: LocalSolanaClient
 
     beforeAll(async () => {
       const payer = await generateKeyPairSigner()
       container = await new SurfpoolContainer().withSlotTime(100).start()
-      client = createSolanaClient(container, payer)
+      client = await createLocalSolanaClient({ container, payer })
     }, 120_000)
 
     afterAll(async () => {

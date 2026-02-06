@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test'
-import { generateKeyPairSigner, lamports } from '@solana/kit'
-import { createDefaultRpcClient } from '@solana/kit-plugins'
+import { lamports } from '@solana/kit'
+import { createLocalSolanaClient, type LocalSolanaClient } from '../src/create-local-solana-client.ts'
 import {
   SolanaTestValidatorContainer,
   type StartedSolanaTestValidatorContainer,
@@ -8,16 +8,11 @@ import {
 
 describe('SolanaTestValidatorContainer', () => {
   let container: StartedSolanaTestValidatorContainer
-
-  let client: ReturnType<typeof createDefaultRpcClient>
+  let client: LocalSolanaClient
 
   beforeAll(async () => {
     container = await new SolanaTestValidatorContainer().start()
-    client = createDefaultRpcClient({
-      payer: await generateKeyPairSigner(),
-      rpcSubscriptionsConfig: { url: container.urlWs },
-      url: container.url,
-    })
+    client = await createLocalSolanaClient({ container })
   }, 120_000)
 
   afterAll(async () => {
