@@ -1,5 +1,11 @@
 # @beeman/testcontainers
 
+## 1.1.0
+
+### Minor Changes
+
+- 7176a1c: update kit plugins to use updated createDefaultLocalhostRpcClient
+
 ## 1.0.0
 
 ### Major Changes
