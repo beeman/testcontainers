@@ -1,11 +1,13 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   clean: true,
+  deps: {
+    neverBundle: [/^@solana\//, 'testcontainers'],
+  },
   dts: true,
   entry: ['src/index.ts'],
-  external: ['@solana/kit', '@solana/kit-plugins', 'testcontainers'],
+  fixedExtension: false,
   format: ['esm', 'cjs'],
   sourcemap: true,
-  splitting: false,
 })
