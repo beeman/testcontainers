@@ -1,5 +1,12 @@
 # @beeman/testcontainers
 
+## 1.1.1
+
+### Patch Changes
+
+- f1f65cb: widen the supported TypeScript peer range to include v6 and pin local tooling to TypeScript 6
+- 24350c9: Replace tsup with tsdown for package builds while preserving the published output file layout.
+
 ## 1.1.0
 
 ### Minor Changes
