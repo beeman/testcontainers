@@ -1,4 +1,5 @@
 export { createLocalSolanaClient, type LocalSolanaClient } from './create-local-solana-client.ts'
+export { LibsqlServerContainer, StartedLibsqlServerContainer } from './libsql-server-container.ts'
 export {
   SolanaTestValidatorContainer,
   StartedSolanaTestValidatorContainer,

@@ -4,17 +4,63 @@ A collection of [Testcontainers](https://testcontainers.com/) for testing your a
 
 ## Installation
 
+Install the package and Testcontainers:
+
 ```bash
-bun add @beeman/testcontainers testcontainers @solana/kit @solana/kit-plugins
+bun add @beeman/testcontainers testcontainers
 ```
 
 ## Available Containers
+
+### LibSQL Server
+
+The `LibsqlServerContainer` provides a real libSQL server running in a Docker container. It uses the `ghcr.io/beeman/libsql-server-healthcheck` image by default so Testcontainers can wait on the container health check instead of log output.
+
+#### Usage
+
+If you want to use the example client below, also install `@libsql/client`:
+
+```bash
+bun add @libsql/client
+```
+
+```typescript
+import { createClient } from '@libsql/client'
+import { LibsqlServerContainer } from '@beeman/testcontainers'
+
+const container = await new LibsqlServerContainer().start()
+const client = createClient({ url: container.url })
+
+await client.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL)')
+await client.execute({
+  sql: 'INSERT INTO users(name) VALUES (?)',
+  args: ['beeman'],
+})
+
+const result = await client.execute('SELECT id, name FROM users')
+
+console.log(result.rows[0]?.name)
+
+client.close()
+await container.stop()
+```
+
+#### Properties
+
+- `container.url`: Returns the HTTP URL (e.g., `http://localhost:32768`).
+- `container.urlGrpc`: Returns the gRPC URL (e.g., `http://localhost:32769`).
+- `container.port`: Returns the mapped HTTP port.
+- `container.portGrpc`: Returns the mapped gRPC port.
+
+For advanced libSQL configuration such as authentication, replicas, or persistent storage, use the inherited `GenericContainer` methods from Testcontainers.
 
 ### Solana Test Validator
 
 The `SolanaTestValidatorContainer` provides a real Solana validator running in a Docker container, perfect for integration tests. It uses the `ghcr.io/beeman/solana-test-validator` image by default.
 
 #### Usage
+
+If you want to use the `createLocalSolanaClient` helper below, see the optional install in the `createLocalSolanaClient` section.
 
 ```typescript
 import { SolanaTestValidatorContainer, createLocalSolanaClient } from '@beeman/testcontainers'
@@ -43,6 +89,8 @@ await container.stop()
 The `SurfpoolContainer` provides a [Surfpool](https://github.com/txtx/surfpool) Solana simulator running in a Docker container. It runs in offline mode by default for isolated testing. It uses the `surfpool/surfpool:1.0` image by default.
 
 #### Basic Usage
+
+If you want to use the `createLocalSolanaClient` helper below, see the optional install in the `createLocalSolanaClient` section.
 
 ```typescript
 import { SurfpoolContainer, createLocalSolanaClient } from '@beeman/testcontainers'
@@ -167,6 +215,12 @@ const container = await new SurfpoolContainer()
 ### `createLocalSolanaClient`
 
 A convenience helper that creates a Solana RPC client configured for a local container. It wraps `createDefaultLocalhostRpcClient` from `@solana/kit-plugins` and works with both `SolanaTestValidatorContainer` and `SurfpoolContainer`.
+
+To use this helper, install `@solana/kit` and `@solana/kit-plugins`:
+
+```bash
+bun add @solana/kit @solana/kit-plugins
+```
 
 ```typescript
 import { SurfpoolContainer, createLocalSolanaClient } from '@beeman/testcontainers'
