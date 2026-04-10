@@ -1,5 +1,11 @@
 # @beeman/testcontainers
 
+## 1.2.0
+
+### Minor Changes
+
+- 60c8f8f: add a healthcheck-based LibSQL server testcontainer
+
 ## 1.1.1
 
 ### Patch Changes
