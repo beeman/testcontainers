@@ -1,5 +1,11 @@
 # @beeman/testcontainers
 
+## 1.2.1
+
+### Patch Changes
+
+- ee8cd14: Update the Surfpool container default image to `surfpool/surfpool:latest`.
+
 ## 1.2.0
 
 ### Minor Changes
