@@ -2,8 +2,9 @@ import type { StartedTestContainer } from 'testcontainers'
 import { AbstractStartedContainer, GenericContainer, Wait } from 'testcontainers'
 
 const DEFAULT_BLOCK_PRODUCTION_MODE = 'clock'
-const DEFAULT_IMAGE = 'surfpool/surfpool:1.0'
+const DEFAULT_IMAGE = 'surfpool/surfpool:latest'
 const DEFAULT_LOG_LEVEL = 'info'
+const DEFAULT_NETWORK_HOST = '0.0.0.0'
 const DEFAULT_PORT_RPC = 8899
 const DEFAULT_PORT_STUDIO = 18488
 const DEFAULT_PORT_WS = 8900
@@ -49,7 +50,7 @@ export class SurfpoolContainer extends GenericContainer {
 
   constructor(image = DEFAULT_IMAGE) {
     super(image)
-    this.withStartupTimeout(120_000).withWaitStrategy(Wait.forLogMessage(/Datasource connection successful/))
+    this.withEnvironment({ SURFPOOL_NETWORK_HOST: DEFAULT_NETWORK_HOST }).withStartupTimeout(120_000)
   }
 
   withSolanaNetwork(network: SurfpoolNetwork): this {
@@ -184,7 +185,10 @@ export class SurfpoolContainer extends GenericContainer {
     const wsPort = this.options.wsPort ?? DEFAULT_PORT_WS
     const studioPort = this.options.studioPort ?? DEFAULT_PORT_STUDIO
 
-    this.withExposedPorts(port, wsPort, studioPort).withCommand(this.buildCommand())
+    this.withExposedPorts(port, wsPort, studioPort)
+      .withCommand(this.buildCommand())
+      // Surfpool RPC only allows POST/OPTIONS; 405 from GET means the RPC port is reachable.
+      .withWaitStrategy(Wait.forHttp('/', port).forStatusCode(405))
 
     return new StartedSurfpoolContainer(await super.start(), {
       port,

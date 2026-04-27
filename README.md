@@ -86,7 +86,7 @@ await container.stop()
 
 ### Surfpool
 
-The `SurfpoolContainer` provides a [Surfpool](https://github.com/txtx/surfpool) Solana simulator running in a Docker container. It runs in offline mode by default for isolated testing. It uses the `surfpool/surfpool:1.0` image by default.
+The `SurfpoolContainer` provides a [Surfpool](https://github.com/txtx/surfpool) Solana simulator running in a Docker container. It runs in offline mode by default for isolated testing. It uses the `surfpool/surfpool:latest` image by default.
 
 #### Basic Usage
 
