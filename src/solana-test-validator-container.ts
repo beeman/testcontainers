@@ -2,14 +2,14 @@ import { AbstractStartedContainer, GenericContainer, Wait } from 'testcontainers
 
 const SOLANA_PORT_RPC = 8899
 const SOLANA_PORT_WS = 8900
-const DEFAULT_IMAGE = 'ghcr.io/beeman/solana-test-validator:latest'
+const DEFAULT_IMAGE = 'beeman/solana-test-validator:latest'
 
 export class SolanaTestValidatorContainer extends GenericContainer {
   constructor(image = DEFAULT_IMAGE) {
     super(image)
     this.withExposedPorts(SOLANA_PORT_RPC, SOLANA_PORT_WS)
       .withStartupTimeout(120_000)
-      .withWaitStrategy(Wait.forLogMessage(/Processed Slot: \d+/))
+      .withWaitStrategy(Wait.forHealthCheck())
       .withPrivilegedMode()
   }
 

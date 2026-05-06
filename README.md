@@ -56,7 +56,7 @@ For advanced libSQL configuration such as authentication, replicas, or persisten
 
 ### Solana Test Validator
 
-The `SolanaTestValidatorContainer` provides a real Solana validator running in a Docker container, perfect for integration tests. It uses the `ghcr.io/beeman/solana-test-validator` image by default.
+The `SolanaTestValidatorContainer` provides a real Solana validator running in a Docker container, perfect for integration tests. It uses the `beeman/solana-test-validator` image by default.
 
 #### Usage
 

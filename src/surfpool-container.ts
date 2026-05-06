@@ -187,8 +187,7 @@ export class SurfpoolContainer extends GenericContainer {
 
     this.withExposedPorts(port, wsPort, studioPort)
       .withCommand(this.buildCommand())
-      // Surfpool RPC only allows POST/OPTIONS; 405 from GET means the RPC port is reachable.
-      .withWaitStrategy(Wait.forHttp('/', port).forStatusCode(405))
+      .withWaitStrategy(Wait.forHealthCheck())
 
     return new StartedSurfpoolContainer(await super.start(), {
       port,
