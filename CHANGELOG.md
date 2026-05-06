@@ -1,5 +1,11 @@
 # @beeman/testcontainers
 
+## 1.2.2
+
+### Patch Changes
+
+- b03bcd4: Use Docker health checks for Solana validator and Surfpool container readiness.
+
 ## 1.2.1
 
 ### Patch Changes
